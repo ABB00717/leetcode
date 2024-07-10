@@ -9,6 +9,4 @@ public:
 
         return nums;
     }
-
-    1929_Concatenation-of-Array
 };
