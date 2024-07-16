@@ -1,21 +1,17 @@
 class Solution {
 public:
     bool isIsomorphic(string s, string t) {
-        if (s.length() != t.length())
-            return false;
+        if (s.length() != t.length()) return false;
 
-        std::unordered_map<char, char> dictS, dictT;
-        for (int i = 0; i < s.length(); i++) {
-            if (dictS.find(s[i]) == dictS.end())
-                dictS[s[i]] = t[i];
-            else if (dictS[s[i]] != t[i])
-                return false;
+        unordered_map<char, char> s_to_t_map, t_to_s_map;
 
-            if (dictT.find(t[i]) == dictT.end())
-                dictT[t[i]] = s[i];
-            else if (dictT[t[i]] != s[i])
-                return false;
-        } 
+        for (size_t i = 0; i < s.length(); i++) {
+            auto [it_s, inserted_s] = s_to_t_map.try_emplace(s[i], t[i]);
+            auto [it_t, inserted_t] = t_to_s_map.try_emplace(t[i], s[i]);
+
+            if (!inserted_s && it_s->second != t[i]) return false;
+            if (!inserted_t && it_t->second != s[i]) return false;
+        }
 
         return true;
     }
