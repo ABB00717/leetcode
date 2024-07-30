@@ -25,10 +25,7 @@ public:
 
   int top() { return stack.top(); }
 
-  int getMin() {
-    minStack.pop();
-    return minStack.top();
-  }
+  int getMin() { return minStack.top(); }
 };
 
 /**
