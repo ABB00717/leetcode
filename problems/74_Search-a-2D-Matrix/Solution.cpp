@@ -6,34 +6,35 @@ public:
     bool result = false;
     int matrixColSize = matrix[0].size(), matrixRowSize = matrix.size();
 
-    int row = 0;
-
-    int l = 0, r = matrixRowSize - 1;
-    int mid = (l + r) / 2;
-    while (matrix[std::max(0, mid - 1)][matrixColSize - 1] > target ||
-           matrix[std::min(matrixRowSize - 1, mid)][matrixColSize - 1] <
-               target) {
+    int top = 0, bottom = matrixRowSize - 1;
+    while (top <= bottom) {
+      int mid = top + (bottom - top) / 2;
+      if (matrix[mid][matrixColSize - 1] < target) {
+        top = mid + 1;
+      } else if (matrix[mid][matrixColSize - 1] > target) {
+        bottom = mid - 1;
+      } else {
+        top = mid;
+        break;
+      }
     }
 
-    for (row = 0;
-         row < matrixRowSize - 1 && matrix[row][matrixColSize - 1] < target;
-         row++) {
-    }
+    if (top >= matrixRowSize || top < 0)
+      return false;
 
-    l = 0, r = matrixColSize - 1;
-    mid = (l + r) / 2;
-    while (matrix[row][mid] != target) {
-      if (matrix[row][l] > target || matrix[row][r] < target) {
-        return false;
-      } else if (matrix[row][mid] < target) {
+    int row = top;
+    int l = 0, r = matrixColSize - 1;
+    while (l <= r) {
+      int mid = l + (r - l) / 2;
+      if (matrix[row][mid] < target) {
         l = mid + 1;
       } else if (matrix[row][mid] > target) {
         r = mid - 1;
+      } else {
+        return true;
       }
-
-      mid = (l + r) / 2;
     }
 
-    return true;
+    return false;
   }
 };
