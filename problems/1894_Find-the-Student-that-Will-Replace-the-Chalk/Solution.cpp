@@ -1,17 +1,20 @@
 #include <vector>
-#include <numeric>
 
 class Solution {
 public:
   int chalkReplacer(std::vector<int>& chalk, int k) {
-    long long sum = std::accumulate(chalk.begin(), chalk.end(), 0); // Add 'std::' before 'accumulate'
-    k %= sum;
+    std::vector<long long> prefixSum(chalk.size());
+    prefixSum[0] = chalk[0];
+    for (int i = 1; i < chalk.size(); i++) prefixSum[i] = prefixSum[i - 1] + chalk[i];
 
-    for (int i = 0; i < chalk.size(); i++) {
-      if (k < chalk[i]) return i;
-      k -= chalk[i];
+    k %= prefixSum.back();
+    int l = 0, r = chalk.size() - 1;
+    while (l < r) {
+      int m = l + (r - l) / 2;
+      if (prefixSum[m] <= k) l = m + 1;
+      else r = m;
     }
 
-    return 0;
+    return l;
   }
 };
