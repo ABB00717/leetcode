@@ -1,10 +1,14 @@
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 class Solution {
 public:
   std::vector<int> diffWaysToCompute(std::string expression) {
     std::vector<int> result;
+    if (memo.find(expression) != memo.end()) {
+      return {memo[expression]};
+    }
 
     for (int i = 0; i < expression.size(); i++) {
       char c = expression[i];
@@ -26,6 +30,10 @@ public:
       }
     }
 
+    memo[expression] = result.empty() ? std::vector<int>(1, std::stoi(expression)) : result;
     return result.empty() ? std::vector<int>{std::stoi(expression)} : result;
   }
+
+private:
+  std::unordered_map<std::string, std::vector<int>> memo;
 };
