@@ -2,18 +2,15 @@
 class Solution {
 public:
   int removeDuplicates(std::vector<int> &nums) {
-    int result = 0;
-    int last = -101;
-    for (int i = 0; i < nums.size();) {
-      if (last == nums[i]) {
-        nums.erase(nums.begin()+i);
-      } else {
-        last = nums[i];
-        result++;
+    int n = nums.size();
+    int i = 0;
+    for (int j = 0; j < n; j++) {
+      if (nums[i] != nums[j]) {
         i++;
+        nums[i] = nums[j];
       }
     }
 
-    return result;
+    return i + 1;
   }
 };
