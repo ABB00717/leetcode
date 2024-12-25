@@ -1,24 +1,21 @@
+#include <csetjmp>
+#include <unordered_map>
 #include <vector>
 class Solution {
 public:
   int removeDuplicates(std::vector<int> &nums) {
-    int count = 0;
-    int prev = -10001;
+    int n = nums.size();
+    int stable = 0;
+    std::unordered_map<int, int> count;
 
-    for (int i = 0; i < nums.size();i++) {
-      if (prev == nums[i]) {
-        count++;
-        if (count >= 2) {
-          nums.erase(nums.begin()+i);
-          i--;
-        }
-        continue;
+    for (int i = 0; i < nums.size(); i++) {
+      count[nums[i]]++;
+      if (count[nums[i]] < 3) {
+        nums[stable] = nums[i];
+        stable++;
       }
-
-      prev = nums[i];
-      count = 1;
     }
 
-    return nums.size();
+    return stable + 1;
   }
 };
