@@ -1,18 +1,23 @@
-#include <unordered_map>
 #include <vector>
 class Solution {
 public:
   int majorityElement(std::vector<int> &nums) {
-    std::unordered_map<int, int> count;
-    int majority = static_cast<int>(nums.size() / 2);
+    int count = 1;
+    int candidate = nums[0];
 
-    for (auto num : nums) {
-      count[num]++;
-      if (count[num] > majority) {
-        return  num;
+    for (int i = 1; i < nums.size(); i++) {
+      if (nums[i] != candidate) {
+        count--;
+      } else {
+        count++;
+      }
+
+      if (count < 0) {
+        candidate = nums[i];
+        count = 1;
       }
     }
 
-    return 0;
+    return candidate;
   }
 };
