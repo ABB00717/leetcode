@@ -11,8 +11,7 @@ public:
 
     int result = 0;
     for (int i = 0; i < s.size()-1; i++) {
-      if (s[i] == '0') zeroCount++;
-      else oneCount--;
+      s[i] == '0' ? zeroCount++ : oneCount--;
 
       result = std::max(result, oneCount + zeroCount);
     }
