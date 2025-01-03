@@ -20,17 +20,21 @@ public:
   std::vector<int> vowelStrings(std::vector<std::string> &words,
                                 std::vector<std::vector<int>> &queries) {
     std::vector<int> prefixSum(words.size(), 0);
-    if (checkBEVowel(words[0])) prefixSum[0] = 1;
+    if (checkBEVowel(words[0]))
+      prefixSum[0] = 1;
 
     for (int i = 1; i < words.size(); i++) {
-      prefixSum[i] = prefixSum[i-1];
-      if (checkBEVowel(words[i])) prefixSum[i]++;
+      prefixSum[i] = prefixSum[i - 1];
+      if (checkBEVowel(words[i]))
+        prefixSum[i]++;
     }
 
     std::vector<int> result(queries.size());
     for (int i = 0; i < result.size(); i++) {
-      if (queries[i][0] != 0) result[i] = prefixSum[queries[i][1]] - prefixSum[queries[i][0]-1];
-      else result[i] = prefixSum[queries[i][1]];
+      if (queries[i][0] != 0)
+        result[i] = prefixSum[queries[i][1]] - prefixSum[queries[i][0] - 1];
+      else
+        result[i] = prefixSum[queries[i][1]];
     }
 
     return result;
