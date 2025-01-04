@@ -1,39 +1,37 @@
-#include <cstdlib>
+#include <algorithm> // for lower_bound
 #include <string>
 #include <vector>
+
 class Solution {
 public:
   /*因為只要求三個字元的 Palindrom，所以只要檢測 prefix == suffix 以及中間某個字元有沒有出現即可*/
-  int countPalindromicSubsequence(std::string s) {
-    if (s.size() < 3)
-      return 0;
-
-    std::vector<std::vector<int>> prefixCount(
-        26, std::vector<int>(s.size() + 1, 0));
-    prefixCount[s[0] - 'a'][0] = 1;
-    for (int i = 1; i < s.size(); i++) {
-      for (char target = 'a'; target <= 'z'; target++) {
-        prefixCount[target - 'a'][i] = prefixCount[target - 'a'][i - 1];
-        if (s[i] == target)
-          prefixCount[target - 'a'][i]++;
-      }
-    }
-
+  int countPalindromicSubsequence(const std::string &s) {
     std::vector<std::vector<int>> positions(26);
-    for (int i = 0; i < s.size(); i++) {
-      positions[s[i]-'a'].push_back(i);
+    for (int i = 0; i < (int)s.size(); i++) {
+      positions[s[i] - 'a'].push_back(i);
     }
 
     int result = 0;
-    for (char prefix = 0; prefix < 26; prefix++) {
-      if (positions[prefix].size() < 2) continue;
-      int l = positions[prefix][0], r = positions[prefix][positions[prefix].size()-1];
+    for (int c = 0; c < 26; c++) {
+      if (positions[c].size() < 2)
+        continue;
 
-      for (char mid = 0; mid < 26; mid++) {
-        if (prefixCount[mid][r-1] - prefixCount[mid][l] != 0) result++;
+      int l = positions[c].front();
+      int r = positions[c].back();
+      if (r - l < 2) {
+        continue;
+      }
+
+      for (int mid = 0; mid < 26; mid++) {
+        // binary search：找 positions[mid] 中「第一個 >= (l+1)」的迭代器 it
+        auto it = std::lower_bound(positions[mid].begin(), positions[mid].end(),
+                                   l + 1);
+        // 如果 it 還在範圍內，且 *it < r，代表區間 (l, r) 有字元 mid
+        if (it != positions[mid].end() && *it < r) {
+          result++;
+        }
       }
     }
-
     return result;
   }
 };
