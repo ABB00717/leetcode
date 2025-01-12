@@ -7,61 +7,47 @@ public:
     if (n % 2)
       return false;
 
+    /* 左括號
+      * low: 當前位置可能有的最小左括號數量
+      * high: 當前位置可能有的最大左括號數量
+    */
+    int low = 0, high = 0;
     for (int i = 0; i < n; i++) {
       if (locked[i] == '0') {
-        s[i] = '-';
-      }
-    }
-
-    std::stack<int> left, unlocked;
-    for (int i = 0; i < n; i++) {
-      if (s[i] == '-') {
-        unlocked.push(i);
-      } else if (s[i] == ')') {
-        s[i] = 'x';
-        if (!left.empty()) {
-          s[left.top()] = 'x';
-          left.pop();
-        } else if (!unlocked.empty()) {
-          s[unlocked.top()] = 'x';
-          unlocked.pop();
-        } else {
-          return false;
-        }
+        low--;
+        high++;
       } else if (s[i] == '(') {
-        left.push(i);
+        low++;
+        high++;
+      } else {
+        low--;
+        high--;
       }
+
+      if (high < 0)
+        return false;
+      low = std::max(0, low);
     }
 
-    std::stack<int> right;
-    unlocked = std::stack<int>();
+    // 右括號
+    low = 0, high = 0;
     for (int i = n - 1; i >= 0; i--) {
-      if (s[i] == 'x')
-        continue;
-
-      if (s[i] == '-') {
-        unlocked.push(i);
+      if (locked[i] == '0') {
+        low--;
+        high++;
       } else if (s[i] == ')') {
-        right.push(i);
-      } else if (s[i] == '(') {
-        if (!right.empty()) {
-          s[right.top()] = 'x';
-          right.pop();
-        } else if (!unlocked.empty()) {
-          s[unlocked.top()] = 'x';
-          unlocked.pop();
-        } else {
-          return false;
-        }
+        low++;
+        high++;
+      } else {
+        low--;
+        high--;
       }
+
+      if (high < 0)
+        return false;
+      low = std::max(0, low);
     }
 
-    int unlockedCount = 0;
-    for (char c : s) {
-      if (c == '-')
-        unlockedCount++;
-    }
-
-    return unlockedCount % 2 == 0;
+    return true;
   }
 };
