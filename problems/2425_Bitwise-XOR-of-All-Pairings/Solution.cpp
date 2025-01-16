@@ -1,33 +1,25 @@
-#include <bitset>
-#include <cmath>
-#include <string>
 #include <vector>
 class Solution {
 public:
   int xorAllNums(std::vector<int> &nums1, std::vector<int> &nums2) {
-    std::vector<long long int> bitCount(32, 0);
-
     int nums1Size = nums1.size(), nums2Size = nums2.size();
+    int xorNums1 = 0, xorNums2 = 0;
+
+    // 計算 nums1 和 nums2 的整體 XOR
     for (int num : nums1) {
-      std::string numBinary = std::bitset<32>(num).to_string();
-      for (int i = 0; i < 32; i++) {
-        if (numBinary[i] == '1')
-          bitCount[i] += 1 * nums2Size;
-      }
+      xorNums1 ^= num;
     }
-
     for (int num : nums2) {
-      std::string numBinary = std::bitset<32>(num).to_string();
-      for (int i = 0; i < 32; i++) {
-        if (numBinary[i] == '1')
-          bitCount[i] += 1 * nums1Size;
-      }
+      xorNums2 ^= num;
     }
 
+    // 判斷 XOR 結果根據奇偶性
     int result = 0;
-    for (int i = 0; i < 32; i++) {
-      if (bitCount[i] % 2 == 1)
-        result += std::pow(2, 31 - i);
+    if (nums2Size % 2 == 1) {
+      result ^= xorNums1;
+    }
+    if (nums1Size % 2 == 1) {
+      result ^= xorNums2;
     }
 
     return result;
