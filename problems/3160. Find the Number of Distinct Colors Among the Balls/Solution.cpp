@@ -6,35 +6,32 @@ class Solution {
 public:
   std::vector<int> queryResults(int limit,
                                 std::vector<std::vector<int>> &queries) {
-    std::unordered_map<int, int> count; // 記錄每個顏色的數量
+    std::unordered_map<int, int> colorCount; // 追蹤每種顏色的出現次數
+    std::unordered_map<int, int> colors;     // 只存有顏色的球
     std::vector<int> result;
-    std::vector<int> colors(limit + 1, 0); // 確保大小為 limit + 1
-
     int distinctColors = 0;
 
     for (const auto &query : queries) {
       int ball = query[0];
       int newColor = query[1];
-      int currentColor = colors[ball]; // 取得目前球的顏色
+      int currentColor = colors[ball]; // 取得當前球的顏色（若未標記過，則為 0）
 
-      // 如果球已經有顏色，則先減少該顏色的數量
+      // 移除舊顏色
       if (currentColor != 0) {
-        count[currentColor]--;
-        if (count[currentColor] == 0) {
-          distinctColors--; // 如果該顏色不再出現，則從 distinctColors 減去
+        colorCount[currentColor]--;
+        if (colorCount[currentColor] == 0) {
+          distinctColors--; // 如果舊顏色的計數歸零，則 distinctColors 減少
+          colorCount.erase(currentColor); // 移除記錄，減少記憶體使用
         }
       }
 
-      // 更新球的顏色
+      // 標記新顏色
       colors[ball] = newColor;
-
-      // 增加新顏色的數量
-      if (count[newColor] == 0) {
-        distinctColors++; // 如果該顏色是第一次出現，則增加 distinctColors
+      if (colorCount[newColor] == 0) {
+        distinctColors++; // 如果新顏色是第一次出現，則 distinctColors 增加
       }
-      count[newColor]++;
+      colorCount[newColor]++;
 
-      // 記錄當前的 distinctColors
       result.push_back(distinctColors);
     }
 
