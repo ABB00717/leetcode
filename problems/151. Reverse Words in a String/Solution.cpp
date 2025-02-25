@@ -12,7 +12,7 @@ public:
     }
 
     if (reversedWords.empty()) return "";
-    reversedWords.erase(0, 1);
+      reversedWords.erase(0, 1);
 
     return reversedWords;
   }
