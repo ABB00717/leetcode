@@ -6,7 +6,7 @@ public:
     int n = arr.size();
     
     std::unordered_map<int, int> index;
-    std::unordered_map<int, std::unordered_map<int, int>> dp;
+    std::vector<std::vector<int>> dp(n, std::vector<int>(n, 2));
 
     for (int i = 0; i < n; ++i) {
       index[arr[i]] = i;
@@ -17,12 +17,10 @@ public:
       for (int j = 0; j < i; j++) {
         int k = arr[i] - arr[j];
         if (index.count(k) && index[k] < j) {
-          dp[j][i] = dp[index[k]][j] + 1;
-        } else {
-          dp[j][i] = 2;
+          int k_index = index[k];
+          dp[j][i] = dp[k_index][j] + 1;
+          maxLength = std::max(maxLength, dp[j][i]);
         }
-
-        maxLength = std::max(maxLength, dp[j][i]);
       }
     }
 
