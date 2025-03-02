@@ -3,17 +3,17 @@
 class Solution {
 public:
   int pivotIndex(std::vector<int> &nums) {
-    if (nums.size() < 2)
-      return -1;
-    int lSum = 0, rSum = std::accumulate(nums.begin(), nums.end(), 0);
+    long long totalSum = std::accumulate(nums.begin(), nums.end(), 0);
+    long long leftSum = 0;
 
     for (int div = 0; div < nums.size(); div++) {
-      rSum -= nums[div];
-      if (lSum == rSum)
+      if (leftSum == totalSum - leftSum - nums[div]) {
         return div;
-      lSum += nums[div];
-    }
+      }
 
+      leftSum += nums[div];
+    }
+    
     return -1;
   }
 };
