@@ -3,20 +3,16 @@
 class Solution {
 public:
   std::string removeStars(std::string s) {
-    std::stack<char> stack;
     std::string result;
+    result.reserve(s.size());
 
-    for (char ch : s) {
+    for (const char& ch : s) {
       if (ch == '*') {
-        stack.pop();
+        if (!result.empty())
+          result.pop_back();
       } else {
-        stack.push(ch);
+        result.push_back(ch);
       }
-    }
-
-    while (!stack.empty()) {
-      result.insert(result.begin(), stack.top());
-      stack.pop();
     }
 
     return result;
