@@ -17,29 +17,41 @@
  * right(right) {}
  * };
  */
+#include <unordered_map>
 #include <vector>
 class Solution {
 private:
-  int dfs(TreeNode* root, int targetSum, std::vector<long long int> pathSum) {
+  int dfs(TreeNode* root, long long currSum, int targetSum, std::unordered_map<long long, int>& freq) {
     if (root == nullptr)
       return 0;
     
-    long long int result = 0;
-    if (targetSum == root->val)
-      result++;
+    int res = 0;
+    currSum += root->val;
 
-    for (long long int& sum : pathSum) {
-      sum += root->val;
-      if (sum == targetSum)
-        result++;
+    if (currSum == targetSum) {
+      res++;
     }
-    pathSum.push_back(root->val);
 
-    return result + dfs(root->left, targetSum, pathSum) + dfs(root->right, targetSum, pathSum);
+    if (freq.find(currSum - targetSum) != freq.end()) {
+      res += freq[currSum - targetSum];
+    }
+
+    freq[currSum]++;
+    res += dfs(root->left, currSum, targetSum, freq);
+    res += dfs(root->right, currSum, targetSum, freq);
+
+    freq[currSum]--;
+    if (freq[currSum] == 0) {
+      freq.erase(currSum);
+    }
+
+    return res;
   }
 public:
   int pathSum(TreeNode *root, int targetSum) {
-    return dfs(root, targetSum, {});
+    std::unordered_map<long long, int> freq;
+    
+    return dfs(root, 0, targetSum, freq);
   }
 };
 // @lc code=end
