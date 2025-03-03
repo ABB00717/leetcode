@@ -20,6 +20,18 @@
 #include <cstddef>
 #include <stack>
 class Solution {
+private:
+  ListNode* reverseList(ListNode* head) {
+    ListNode* prev = nullptr;
+    ListNode* curr = head;
+    while (curr) {
+      ListNode* nxt = curr->next;
+      curr->next = prev;
+      prev = curr;
+      curr = nxt;
+    }
+    return prev;
+  }
 public:
   int pairSum(ListNode *head) {
     ListNode *slow = head->next;
@@ -29,17 +41,9 @@ public:
       fast = fast->next->next;
     }
 
-    ListNode *newHead = slow;
-    ListNode *prev = nullptr;
-    ListNode *next = newHead->next;
-    while (newHead != nullptr) {
-      next = newHead->next;
-      newHead->next = prev;
-      prev = newHead;
-      newHead = next;
-    }
-
-    ListNode *rHead = prev;
+    ListNode* secondHalf = reverseList(slow);
+    
+    ListNode *rHead = secondHalf;
     ListNode *lHead = head;
     int result = 0;
     while (rHead != nullptr) {
