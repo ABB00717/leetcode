@@ -9,25 +9,27 @@
 class Solution {
 public:
   std::vector<int> pivotArray(std::vector<int> &nums, int pivot) {
-    std::vector<int> less, mid, greater;
+    std::vector<int> result;
+    result.reserve(nums.size());
 
     for (const int& num : nums) {
       if (num < pivot) {
-        less.push_back(num);
-      } else if (num == pivot) {
-        mid.push_back(num);
-      } else {
-        greater.push_back(num);
+        result.push_back(num);
+      }
+    }
+    
+    for (const int& num : nums) {
+      if (num == pivot) {
+        result.push_back(num);
+      }
+    }
+    
+    for (const int& num : nums) {
+      if (num > pivot) {
+        result.push_back(num);
       }
     }
 
-    std::vector<int> result(less.begin(), less.end());
-    for (const int& num : mid) {
-      result.push_back(num);
-    }
-    for (const int& num : greater) {
-      result.push_back(num);
-    }
     return result;
   }
 };
