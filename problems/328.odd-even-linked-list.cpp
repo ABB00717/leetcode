@@ -22,18 +22,15 @@ public:
       return nullptr;
     
     ListNode *odd = head, *even = head->next;
-    if (even == nullptr || even->next == nullptr)
-      return head; 
-    
+    ListNode *evenHead = even;    
     while (even != nullptr && even->next != nullptr) {
-      ListNode* evenNext = even->next;
-      even->next = evenNext->next;
+      odd->next = odd->next->next;
+      even->next = even->next->next;
       even = even->next;
-      evenNext->next = odd->next;
-      odd->next = evenNext;
       odd = odd->next;
     }
 
+    odd->next = evenHead;
     return head;
   }
 };
