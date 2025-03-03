@@ -16,29 +16,36 @@
  * };
  */
 #include <algorithm>
+#include <climits>
+#include <cstddef>
 #include <stack>
 class Solution {
 public:
   int pairSum(ListNode *head) {
-    int n = 0;
-    ListNode *cur = head;
-    while (cur != nullptr) {
-      n++;
-      cur = cur->next;
+    ListNode *slow = head->next;
+    ListNode *fast = head->next->next;
+    while (fast != nullptr) {
+      slow = slow->next;
+      fast = fast->next->next;
     }
 
-    std::stack<int> numStack;
-    cur = head;
-    for (int i = 0; i < n/2; i++) {
-      numStack.push(cur->val);
-      cur = cur->next;
+    ListNode *newHead = slow;
+    ListNode *prev = nullptr;
+    ListNode *next = newHead->next;
+    while (newHead != nullptr) {
+      next = newHead->next;
+      newHead->next = prev;
+      prev = newHead;
+      newHead = next;
     }
 
+    ListNode *rHead = prev;
+    ListNode *lHead = head;
     int result = 0;
-    while (cur != nullptr) {
-      result = std::max(result, numStack.top() + cur->val);
-      numStack.pop();
-      cur = cur->next;
+    while (rHead != nullptr) {
+      result = std::max(result, rHead->val + lHead->val);
+      rHead = rHead->next;
+      lHead = lHead->next;
     }
 
     return result;
