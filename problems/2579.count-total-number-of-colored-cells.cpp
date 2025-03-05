@@ -9,13 +9,8 @@
 class Solution {
 public:
   long long coloredCells(int n) {
-    std::vector<long long> dp(n+1, 0);
-    dp[1] = 1;
-    for (int i = 2; i <= n; i++) {
-      dp[i] = dp[i-1] + i*4 - 4;
-    }
-
-    return dp[n];
+    long long result = n*(n+1)/2 + n*(n-1);
+    return n > 2 ? result + (n-1)*(n-2)/2 : result;
   }
 };
 // @lc code=end
