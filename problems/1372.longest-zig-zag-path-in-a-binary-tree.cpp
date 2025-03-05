@@ -21,25 +21,21 @@
 class Solution {
 private:
   const bool RIGHT = true, LEFT = false;
-  int maxPath = 0;
-  void dfs(TreeNode* node, const bool &prevDir, int curPath) {
+  void dfs(TreeNode* node, bool prevDir, int curPath, int& maxPath) {
     if (!node)
       return;
     maxPath = std::max(maxPath, curPath);
   
-    if (prevDir != RIGHT) {
-      dfs(node->left, LEFT, 1);
-      dfs(node->right, RIGHT, curPath+1);
-    } else {
-      dfs(node->left, LEFT, curPath+1);
-      dfs(node->right, RIGHT, 1);
-    }
+    dfs(node->left, LEFT, prevDir == RIGHT ? curPath+1 : 1, maxPath);
+    dfs(node->right, RIGHT, prevDir == LEFT ? curPath+1 : 1, maxPath);
   }
 
 public:
   int longestZigZag(TreeNode *root) {
-    dfs(root->left, LEFT, 1);
-    dfs(root->right, RIGHT, 1);
+    int maxPath = 0;
+    
+    dfs(root->left, LEFT, 1, maxPath);
+    dfs(root->right, RIGHT, 1, maxPath);
 
     return maxPath;
   }
