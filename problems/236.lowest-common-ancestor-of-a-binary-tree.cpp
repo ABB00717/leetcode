@@ -15,79 +15,35 @@
  * };
  */
 #include <algorithm>
+#include <cmath>
 #include <vector>
 class Solution {
 private:
-  enum dir {
-    ROOT,
-    RIGHT,
-    LEFT,
-    ARRIVE,
-  };
-
-  std::vector<dir> longestCommonPrefix(const std::vector<dir> &pPath,
-                                       const std::vector<dir> &qPath) {
-    int len = std::min(pPath.size(), qPath.size());
-    int i = 0;
-
-    std::vector<dir> commonPath;
-    while (i < len && (pPath.back() == ARRIVE || qPath.back() == ARRIVE)) {
-      if (pPath[i] != qPath[i]) {
-        commonPath.push_back(ARRIVE);
-        return commonPath;
-      }
-
-      commonPath.push_back(pPath[i++]);
-    }
-
-    return commonPath;
-  }
-
-  TreeNode* findNode(TreeNode* node, std::vector<dir> path) {
-    if (path.empty() || path.front() == ARRIVE)
-      return node;
-
-    dir curDir = path.front();
-    path.erase(path.begin());
-    if (curDir == LEFT) {
-      return findNode(node->left, path);
-    } else {
-      return findNode(node->right, path);
-    }
-
-    return nullptr;
-  }
-
-  void dfs(TreeNode* node, TreeNode* targetNode, dir prevDir, std::vector<dir>& path) {
-    path.push_back(prevDir);
+  bool getPath(TreeNode* node, TreeNode* targetNode, std::vector<TreeNode*>& path) {
     if (!node)
-      return;
-    
-    if (node->val == targetNode->val) {
-      path.push_back(ARRIVE);
-    }
-    
-    if (path.back() != ARRIVE) {
-      dfs(node->left, targetNode, LEFT, path);
-    }
-    if (path.back() != ARRIVE) {
-      path.pop_back();
-      dfs(node->right, targetNode, RIGHT, path);
-    }
-    if (path.back() != ARRIVE) {
-      path.pop_back();
-    }
+      return false;
+
+    path.push_back(node);
+    if (node == targetNode)
+      return true;
+    if (getPath(node->left, targetNode, path) || getPath(node->right, targetNode, path))
+      return true;
+
+    path.pop_back();
+    return false;
   }
 
 public:
   TreeNode *lowestCommonAncestor(TreeNode *root, TreeNode *p, TreeNode *q) {
-    std::vector<dir> pPath = {}, qPath = {};
-    dfs(root, p, ROOT, pPath);
-    dfs(root, q, ROOT, qPath);
+    std::vector<TreeNode*> pPath, qPath;
+    getPath(root, p, pPath);
+    getPath(root, q, qPath);
 
-    std::vector<dir> commonPath = longestCommonPrefix(pPath, qPath);
-    commonPath.erase(commonPath.begin());
-    return findNode(root, commonPath);
+    int i = 0, len = std::min(pPath.size(), qPath.size());
+    while (i < len && pPath[i] == qPath[i]) {
+      i++;
+    }
+    return pPath[i-1];
   }
 };
 // @lc code=end
