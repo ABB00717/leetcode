@@ -14,24 +14,24 @@ class Solution {
 public:
   std::vector<int> findMissingAndRepeatedValues(std::vector<std::vector<int>> &grid) {
     int n = grid.size(), nn = std::pow(n, 2);
-    std::unordered_set<int> allInt;
-    allInt.reserve(std::pow(n, 2));
-    for (int i = 1; i <= nn; i++)
-      allInt.insert(i);
+    std::vector<int> freq(nn+1, 0);
     
-    int a, b;
+    int repeated = 0;
     for (const auto& row : grid) {
       for (int ele : row) {
-        if (!allInt.count(ele))
-          a = ele;
+        if (freq[ele] == 1)
+          repeated = ele;
         else
-          allInt.erase(ele);
+          freq[ele]++;
       }
     }
 
-    b = *allInt.begin();
+    for (int i = 1; i <= nn; i++) {
+      if (freq[i] == 0)
+        return {repeated, i};
+    }
 
-    return {a, b};
+    return {-1, -1};
   }
 };
 // @lc code=end
