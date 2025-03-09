@@ -19,11 +19,13 @@ public:
 
     return visited.size() == rooms.size();
   }
+
 private:
-  void dfs(int key, std::vector<std::vector<int>> rooms, std::set<int>& visited) {
+  void dfs(int key, const std::vector<std::vector<int>>& rooms,
+           std::set<int> &visited) {
     if (visited.count(key))
       return;
-    
+
     visited.insert(key);
     for (int key : rooms[key]) {
       dfs(key, rooms, visited);
