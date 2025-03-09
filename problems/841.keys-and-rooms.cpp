@@ -5,31 +5,31 @@
  */
 
 // @lc code=start
+#include <queue>
 #include <set>
 #include <vector>
 class Solution {
 public:
   bool canVisitAllRooms(std::vector<std::vector<int>> &rooms) {
+    int n = rooms.size();
     std::set<int> visited;
+    std::queue<int> q;
+    q.push(0);
     visited.insert(0);
 
-    for (int key : rooms[0]) {
-      dfs(key, rooms, visited);
+    while (!q.empty()) {
+      int node = q.front();
+      q.pop();
+
+      for (int key : rooms[node]) {
+        if (!visited.count(key)) {
+          q.push(key);
+          visited.insert(key);
+        }
+      }
     }
 
     return visited.size() == rooms.size();
-  }
-
-private:
-  void dfs(int key, const std::vector<std::vector<int>>& rooms,
-           std::set<int> &visited) {
-    if (visited.count(key))
-      return;
-
-    visited.insert(key);
-    for (int key : rooms[key]) {
-      dfs(key, rooms, visited);
-    }
   }
 };
 // @lc code=end
