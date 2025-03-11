@@ -6,39 +6,26 @@
 
 // @lc code=start
 #include <string>
-#include <unordered_map>
+#include <vector>
 class Solution {
 public:
   int numberOfSubstrings(std::string s) {
-    int l = 0, r = -1, result = 0, n = s.size();
-    std::unordered_map<char, int> fq;
+    int l = 0, r = 0, result = 0, n = s.size();
+    std::vector<int> count(3, 0);
 
-    for (r = -1; r < n && fq.size() < 3; r++) {
-      fq[s[r+1]]++;
-    }
+    while (r < n) {
+      count[s[r]-'a']++;
 
-    if (r == n)
-      return 0;
+      while (count[0] > 0 && count[1] > 0 && count[2] > 0) {
+        result += n - r;
 
-    while (l < n) {
-      for (;r < n && fq.size() < 3; r++) {
-        fq[s[r+1]]++;
+        count[s[l]-'a']--;
+        l++;
       }
 
-      if (r < n) {
-        result += (n - r);
-      } else {
-        break;
-      }
-      
-      char lLetter = s[l];
-      fq[lLetter]--;
-      if (fq[lLetter] == 0) {
-        fq.erase(lLetter);
-      } 
-      l++;
+      r++;
     }
-
+    
     return result;
   }
 };
