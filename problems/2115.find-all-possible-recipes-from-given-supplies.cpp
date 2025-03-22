@@ -5,43 +5,47 @@
  */
 
 // @lc code=start
+#include <stack>
 #include <string>
 #include <unordered_map>
-#include <unordered_set>
 #include <vector>
+
+using namespace std;
 
 class Solution {
    public:
-    std::vector<std::string> findAllRecipes(
-        std::vector<std::string>& recipes,
-        std::vector<std::vector<std::string>>& ingredients,
-        std::vector<std::string>& supplies) {
-        std::vector<std::string> create;
-        std::vector<std::string> prev_create;
+    vector<string> findAllRecipes(
+        vector<string>& recipes,
+        vector<vector<string>>& ingredients,
+        vector<string>& supplies) {
+        vector<string> create;
+        unordered_map<string, vector<string>> ingredients_to_recipes;
+        unordered_map<string, int> indegree;
+        
+        for (int i = 0; i < recipes.size(); i++) {
+            indegree[recipes[i]] += ingredients[i].size();
+            
+            for (const string& ingredient : ingredients[i]) {
+                ingredients_to_recipes[ingredient].push_back(recipes[i]);
+            }
+        }
+        
+        stack<string> supplies_stack;
+        for (const string& supply : supplies)
+            supplies_stack.push(supply);
 
-        std::unordered_set<std::string> supplies_set(supplies.begin(), supplies.end());
-        do {
-            prev_create = create;
-            for (int i = 0; i < recipes.size();) {
-                bool have_all_ingredients = true;
-                for (const auto& ingredient : ingredients[i]) {
-                    if (supplies_set.find(ingredient) == supplies_set.end()) {
-                        have_all_ingredients = false;
-                        break;
-                    }
-                }
-
-                if (have_all_ingredients) {
-                    supplies_set.insert(recipes[i]);
-                    create.push_back(recipes[i]);
-                    ingredients.erase(ingredients.begin() + i);
-                    recipes.erase(recipes.begin() + i);
-                } else {
-                    i++;
+        while (!supplies_stack.empty()) {
+            string ingredient = supplies_stack.top();
+            supplies_stack.pop();
+            for (const string& recipe : ingredients_to_recipes[ingredient]) {
+                indegree[recipe]--;
+                if (indegree[recipe] == 0) {
+                    supplies_stack.push(recipe);
+                    create.push_back(recipe);
                 }
             }
-        } while (create.size() != prev_create.size());
-
+        }
+        
         return create;
     }
 };
