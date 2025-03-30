@@ -5,6 +5,7 @@
  */
 
 // @lc code=start
+#include <algorithm>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -12,41 +13,26 @@
 class Solution {
    public:
     std::vector<int> partitionLabels(std::string s) {
-        int n = s.size();
+        std::vector<int> lastIndex(26, 0);
         std::vector<int> result;
+        int n = s.size();
 
-        std::vector<int> prefixSum(
-            n,
-            0);  // Used to track the balance between character starts and ends
-        std::unordered_map<char, int> meet; // Keeps track of the last seen index of each character
+        // No need to record firstIndex, since we can track partition during iteration
         for (int i = 0; i < n; i++) {
-            char ch = s[i];
-
-            if (!meet.count(ch)) {
-                // First time seeing this character, store its index
-                meet[ch] = i; 
-            } else {
-                // Seen the character before
-                // +1 at the first index where it appeared
-                // -1 at the current index to close the region
-                prefixSum[meet[ch]]++;
-                prefixSum[i]--;
-
-                // Update the last seen index to current one
-                meet[ch] = i;
-            }
+            lastIndex[s[i] - 'a'] = i;
         }
 
-        // Scan through prefixSum and count partitions
-        int imbalance = 0, partition = 0;
+        int end = 0, start = 0;
         for (int i = 0; i < n; i++) {
-            partition++; // Increment partition size
-            imbalance += prefixSum[i]; // Accumulate imbalance count
+            // Extent the current partition to include the last occurence of the current cahracter
+            end = std::max(end, lastIndex[s[i]-'a']);
 
-            // If imbalance is 0, this means all open intervals are closed
-            if (imbalance == 0) { 
-                result.push_back(partition); // Store the size of the current partition
-                partition = 0; // Reset for the next partition
+            // where i reaches the end, all character in the current partition are fully include
+            if (end == i) {
+                // Store the size of the current partition
+                result.push_back(end - start + 1);
+                // Start a new partition
+                start = i + 1;
             }
         }
 
