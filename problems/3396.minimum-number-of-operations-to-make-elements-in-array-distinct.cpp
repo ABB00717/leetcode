@@ -5,31 +5,22 @@
  */
 
 // @lc code=start
+#include <cmath>
 #include <unordered_map>
 #include <vector>
 class Solution {
 public:
     int minimumOperations(std::vector<int>& nums) {
-        std::unordered_map<int, int> m;
-        for (const auto& num : nums) {
-            m[num]++;
+        int n = nums.size();
+        bool d[101] = {false};
+
+        for (int i = n-1; i >= 0; i--) {
+            if (d[nums[i]])
+                return std::ceil((i+1) / 3.0);
+            d[nums[i]] = true;            
         }
 
-        int operations = 0;
-        while (nums.size() != m.size()) {
-            operations++;
-            for (int count = 0; count < 3 && !nums.empty(); count++) {
-                int num = nums.front();
-                nums.erase(nums.begin());
-                if (m[num] > 1) {
-                    m[num]--;
-                } else {
-                    m.erase(num);
-                }
-            }
-        }
-
-        return operations;
+        return 0;
     }
 };
 // @lc code=end
