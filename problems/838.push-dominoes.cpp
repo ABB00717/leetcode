@@ -6,38 +6,36 @@
 
 // @lc code=start
 #include <string>
+
 class Solution {
    public:
     std::string pushDominoes(std::string dominoes) {
-        std::string previous = dominoes;
+        int n = dominoes.size();
 
-        do {
-            previous = dominoes;
+        std::string temp = 'L' + dominoes + 'R';
+        int i = 0;
+        for (int j = 1; j < temp.size(); j++) {
+            if (temp[j] == '.')
+                continue;
 
-            for (int i = 0; i < dominoes.size() - 1; i++) {
-                if (dominoes[i] == '.' && dominoes[i + 1] == 'L')
-                    dominoes[i] = 'l';
+            if (temp[i] == 'L' && temp[j] == 'L') {
+                for (int k = i; k < j - 1; k++)
+                    dominoes[k] = 'L';
+            } else if (temp[i] == 'R' && temp[j] == 'R') {
+                for (int k = i; k < j - 1; k++)
+                    dominoes[k] = 'R';
+            } else if (temp[i] == 'R' && temp[j] == 'L') {
+                int mid = (j - i - 1) / 2;
+                for (int k = 0; k < mid; ++k) {
+                    dominoes[i + k] = 'R';
+                }
+                for (int k = 0; k < mid; ++k) {
+                    dominoes[j - 2 - k] = 'L';
+                }
             }
 
-            for (int i = dominoes.size() - 1; i > 0; i--) {
-                if (dominoes[i] == '.' && dominoes[i - 1] == 'R')
-                    dominoes[i] = 'R';
-                else if (dominoes[i] == 'l' && dominoes[i - 1] == 'R')
-                    dominoes[i] = '.';
-                else if (dominoes[i] == 'l')
-                    dominoes[i] = 'L';
-            }
-        } while (previous != dominoes);
-
-
-        if (dominoes.size() == 1)
-            return dominoes;
-        
-        if (dominoes[1] == 'L' && dominoes[0] == '.' || dominoes[0] == 'l')
-            dominoes[0] = 'L';
-
-        if (dominoes[dominoes.size() - 2] == 'R' && dominoes[dominoes.size() - 1] == '.' || dominoes[dominoes.size() - 1] == 'r')
-            dominoes[dominoes.size() - 1] = 'R';
+            i = j;
+        }
 
         return dominoes;
     }
