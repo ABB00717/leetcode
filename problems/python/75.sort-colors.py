@@ -15,17 +15,20 @@ class Solution:
         """
 
         l = 0
-        for i in range(len(nums)):
-            if nums[i] == 0:
-                nums[i], nums[l] = nums[l], nums[i]
-                l += 1
-
         r = len(nums) - 1
-        for i in range(len(nums) - 1, -1, -1):
-            if nums[i] == 2:
-                nums[i], nums[r] = nums[r], nums[i]
-                r -= 1
+        m = 0
 
+        while m <= r:
+            if nums[m] == 0:
+                nums[l], nums[m] = nums[m], nums[l]
+                l += 1
+                m += 1
+            elif nums[m] == 2:
+                nums[r], nums[m] = nums[m], nums[r]
+                r -= 1
+            elif nums[m] == 1:
+                m += 1
+                
         return nums
         
 # @lc code=end
