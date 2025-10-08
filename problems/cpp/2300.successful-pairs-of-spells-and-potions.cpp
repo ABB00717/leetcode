@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <functional>
 
 #include "leetcode.h"
 
@@ -9,20 +10,19 @@ class Solution {
         int n = spells.size();
         int m = potions.size();
         vector<int> result(n, 0);
-        // small -> large
-        sort(potions.begin(), potions.end());
+        // large -> small
+        sort(potions.begin(), potions.end(), greater<int>());
 
         for (int i = 0; i < n; i++) {
-            // t = cast(success / spell) + 1
-            long long target = success / spells[i];
-            if (success % spells[i] != 0) target += 1;
+            // ceiling division
+            long long target = (success + spells[i] - 1) / spells[i];
 
             int least_index = binary_search(target, potions);
 
             if (least_index == -1)
-                result[i] = 0;
+                result[i] = m;
             else
-                result[i] = m - least_index;
+                result[i] = least_index;
         }
 
         return result;
@@ -36,10 +36,10 @@ class Solution {
             int m = l + (r - l) / 2;
 
             if (arr[m] >= target) {
+                l = m + 1;
+            } else {
                 result = m;
                 r = m - 1;
-            } else {
-                l = m + 1;
             }
         }
 
